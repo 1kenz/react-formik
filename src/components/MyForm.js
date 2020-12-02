@@ -1,33 +1,46 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-const validate = (values) => {
-  //values.name  errors.name
-  let errors = {};
-  if (!values.name) errors.name = "Required";
-  if (!values.email) {
-    errors.email = "Required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "Invalid email format";
-  }
-  if (!values.company) errors.company = "Required";
-  return errors;
-};
+
+// const validate = (values) => {
+//   //values.name  errors.name
+//   let errors = {};
+
+//   if (!values.name) errors.name = "Required";
+//   if (!values.email) {
+//     errors.email = "Required";
+//   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+//     errors.email = "Invalid email format";
+//   }
+//   if (!values.company) errors.company = "Required";
+
+//   return errors;
+// };
+
+const validate = Yup.object({
+  name: Yup.string().required("Required"),
+  email: Yup.string().email("Invalid email format").required("Required"),
+  company: Yup.string().max(15, "very long").required("Required"),
+});
+
 const initialValues = {
   name: "",
   email: "",
   company: "",
 };
+
 const onSubmit = (values) => {
   console.log("submit data", values);
 };
+
 function MyForm() {
   const formik = useFormik({
     initialValues,
     onSubmit,
-    validate,
+    validationSchema: validate,
   });
-  console.log("formik--- formik.getFieldProps", formik.getFieldProps("name"));
+
+  //   console.log("formik--- formik.getFieldProps", formik.getFieldProps("name"));
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="form-control">
@@ -41,10 +54,12 @@ function MyForm() {
           //   onBlur={formik.handleBlur}
           {...formik.getFieldProps("name")}
         />
+
         {formik.touched.name && formik.errors.name ? (
           <div className="error">{formik.errors.name}</div>
         ) : null}
       </div>
+
       <div className="form-control">
         <label htmlFor="email">E-mail</label>
         <input

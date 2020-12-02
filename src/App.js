@@ -6,7 +6,7 @@ import MyFormYup from "./components/MyFormYup";
 function App() {
   return (
     <div className="App">
-      <MyFormYup />
+      <MyForm />
     </div>
   );
 }
